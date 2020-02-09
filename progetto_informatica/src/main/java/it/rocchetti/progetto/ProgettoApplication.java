@@ -29,7 +29,7 @@ public class ProgettoApplication {
 			Thread threadDown = new Thread (download);
 			threadDown.start();
 			System.out.println(PATH);
-			//Attesa della chiusura del thread di download
+			//Attesa della chiusura del thread di download 
 			try {
 				threadDown.join(2000);
 			} catch (InterruptedException e) {
