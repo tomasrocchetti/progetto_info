@@ -2,19 +2,11 @@ package it.rocchetti.downloader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.ParseException;
 import java.net.URL;
 import java.net.HttpURLConnection;
-import java.net.URI;
 
 
 public class DownloadFile implements Runnable{
@@ -40,7 +32,7 @@ public class DownloadFile implements Runnable{
 			BufferedInputStream inStream = new BufferedInputStream(httpURLCon.getInputStream());
 			
 			// Calcola dimensione file da scaricare
-			double fileSize = (double)httpURLCon.getContentLengthLong();
+			double fileSize = httpURLCon.getContentLengthLong();
 			
 			// Buffer per salvare file
 			BufferedOutputStream buffOut = new BufferedOutputStream(new FileOutputStream(this.out), 1024);
