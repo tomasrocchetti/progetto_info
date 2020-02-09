@@ -67,5 +67,3 @@ public class DownloadFile implements Runnable{
 		}
 	}
 }
-	
-	//
