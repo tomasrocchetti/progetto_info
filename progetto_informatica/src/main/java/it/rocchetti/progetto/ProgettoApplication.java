@@ -12,13 +12,14 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages={"it.rocchetti"})
 public class ProgettoApplication {
-
+	// Main app
 	public final static String LINK = new String("https://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?file=data/isoc_ec_eseln2.tsv.gz&unzip=true");
 	public final static String PATH = new String("j.tsv");
 
 	public static void main(String[] args) throws Exception {
 
 		
+			
 		
 	}
 
