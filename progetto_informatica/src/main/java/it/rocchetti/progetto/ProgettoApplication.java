@@ -22,8 +22,20 @@ public class ProgettoApplication {
 
 		SpringApplication.run(ProgettoApplication.class, args);
 		
-		
-
+		// crea il file e avvia il download
+		File fileOut = new File(PATH);
+		if(!fileOut.exists()) {
+			DownloadFile download = new DownloadFile(LINK, fileOut);
+			Thread threadDown = new Thread (download);
+			threadDown.start();
+			System.out.println(PATH);
+			//Attesa della chiusura del thread di download
+			try {
+				threadDown.join(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 			
 		
 	}
