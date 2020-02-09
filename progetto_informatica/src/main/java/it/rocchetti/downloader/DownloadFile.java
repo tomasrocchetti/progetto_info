@@ -56,7 +56,7 @@ public class DownloadFile implements Runnable{
 			}
 			else System.out.println("Download terminato");
 			
-			// chiusura stream
+			// chiusura stream 
 			inStream.close();
 			buffOut.close();
 			
