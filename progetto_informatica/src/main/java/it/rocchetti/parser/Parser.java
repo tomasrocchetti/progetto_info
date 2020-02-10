@@ -79,6 +79,14 @@ public class Parser {
         TSVFile.close();
 		return mList;
     }
+	
+	public static String[] parseDescription(String item) throws Exception{		
+		// variabile che conterrà i parametri parsati
+		String[] param = {"","","",""};
+		
+		param = item.split(",");
+		return param;
+	}
 
 
 }
