@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import it.rocchetti.model.DataModel;
+import it.rocchetti.progetto.ProgettoApplication;
 
 public class Parser {
 	
@@ -87,6 +88,4 @@ public class Parser {
 		param = item.split(",");
 		return param;
 	}
-
-
 }
