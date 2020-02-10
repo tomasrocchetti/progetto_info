@@ -172,4 +172,57 @@ public class Controller {
 		}
 		return page.toString();
 	}
+	
+	@GetMapping("/selectParam2")
+	public String selectParam2(@RequestParam(name="value", defaultValue="0") String mCountryP0P1) throws Exception {
+		
+		StringBuilder page = new StringBuilder("Lista degli attributi per: <b>" + mCountryP0P1 + "</b><br>");
+		
+		// crea un oggetto di tipo Parser per fare il parsing della tabella
+		Parser parser = new Parser();
+		parser.parse(ProgettoApplication.PATH);
+		
+		// lista di oggetti DataModel = tabella completa
+		List<DataModel> mList = new ArrayList<DataModel>();
+		
+		List<String> param2 = new ArrayList<String>();
+		
+		mList = Parser.parse(ProgettoApplication.PATH);
+		
+		List<String> allParam = new ArrayList<String>();
+		for(int g = 0; g<mList.size(); g++) {
+			allParam.add(mList.get(g).getDescription());
+		}
+		
+		boolean canAppend = true;
+		
+		String[] param = {"","","",""};
+		String[] splittedValue = {"","","",""};
+		
+		// splitta i valori in ingresso
+		splittedValue = Parser.parseDescription(mCountryP0P1);
+		
+		for (String item:allParam) {
+			canAppend = true;
+			param = Parser.parseDescription(item);
+			
+			try {
+			if(param[0].equals(splittedValue[0]) && param[1].equals(splittedValue[1]) && param[3].equals(splittedValue[2])) {
+				for(String p2:param2) {
+					if(p2.equals(param[2])) {
+						canAppend = false;
+						
+					}
+				}
+					if(canAppend) {
+						param2.add(param[2]);
+						page.append("<a href=" + "http://localhost:8080/selectRow?value=" + param[0] + "," + param[1] + "," + param[2] + "," + param[3] + ">" + param[2] +"</a> <br>");
+						canAppend = false;
+					}
+			
+		}
+			}catch(Exception e) {}
+		}
+		return page.toString();
+	}
 }
