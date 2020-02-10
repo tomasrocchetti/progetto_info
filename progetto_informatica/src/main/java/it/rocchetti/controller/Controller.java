@@ -70,4 +70,53 @@ public class Controller {
 		}
 		return page.toString();
 	}
+	
+	@GetMapping("/selectParam0")
+	public String attrib1ByCountry(@RequestParam(name="country", defaultValue="0") String mCountry) throws Exception {
+		
+		StringBuilder page = new StringBuilder("Lista degli attributi per: <b>" + mCountry + "</b><br>");
+		
+		// crea un oggetto di tipo Parser per fare il parsing della tabella
+		Parser parser = new Parser();
+		parser.parse(ProgettoApplication.PATH);
+		
+		// lista di oggetti DataModel = tabella completa
+		List<DataModel> mList = new ArrayList<DataModel>();
+		
+		List<String> param0 = new ArrayList<String>();
+		
+		mList = Parser.parse(ProgettoApplication.PATH);
+		
+		List<String> allParam = new ArrayList<String>();
+		for(int g = 0; g<mList.size(); g++) {
+			allParam.add(mList.get(g).getDescription());
+		}
+		
+		boolean canAppend = true;
+		
+		String[] param = {"","","",""};
+		
+		for (String item:allParam) {
+			canAppend = true;
+			param = Parser.parseDescription(item);
+			
+			try {
+			if(param[3].equals(mCountry)) {
+				for(String p0:param0) {
+					if(p0.equals(param[0])) {
+						canAppend = false;
+						
+					}
+				}
+					if(canAppend) {
+						param0.add(param[0]);
+						page.append("<a href=" + "http://localhost:8080/selectParam1?country=" + param[0] + "," + param[3] + ">" + param[0] +"</a> <br>");
+						canAppend = false;
+					}
+			
+		}
+			}catch(Exception e) {}
+		}
+		return page.toString();
+	}
 }
