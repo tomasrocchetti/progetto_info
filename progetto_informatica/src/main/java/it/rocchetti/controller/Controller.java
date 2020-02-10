@@ -72,7 +72,7 @@ public class Controller {
 	}
 	
 	@GetMapping("/selectParam0")
-	public String attrib1ByCountry(@RequestParam(name="country", defaultValue="0") String mCountry) throws Exception {
+	public String selectParam0(@RequestParam(name="country", defaultValue="0") String mCountry) throws Exception {
 		
 		StringBuilder page = new StringBuilder("Lista degli attributi per: <b>" + mCountry + "</b><br>");
 		
@@ -110,7 +110,60 @@ public class Controller {
 				}
 					if(canAppend) {
 						param0.add(param[0]);
-						page.append("<a href=" + "http://localhost:8080/selectParam1?country=" + param[0] + "," + param[3] + ">" + param[0] +"</a> <br>");
+						page.append("<a href=" + "http://localhost:8080/selectParam1?value=" + param[0] + "," + param[3] + ">" + param[0] +"</a> <br>");
+						canAppend = false;
+					}
+			
+		}
+			}catch(Exception e) {}
+		}
+		return page.toString();
+	}
+	
+	@GetMapping("/selectParam1")
+	public String selectParam1(@RequestParam(name="value", defaultValue="0") String mCountryP0) throws Exception {
+		
+		StringBuilder page = new StringBuilder("Lista degli attributi per: <b>" + mCountryP0 + "</b><br>");
+		
+		// crea un oggetto di tipo Parser per fare il parsing della tabella
+		Parser parser = new Parser();
+		parser.parse(ProgettoApplication.PATH);
+		
+		// lista di oggetti DataModel = tabella completa
+		List<DataModel> mList = new ArrayList<DataModel>();
+		
+		List<String> param1 = new ArrayList<String>();
+		
+		mList = Parser.parse(ProgettoApplication.PATH);
+		
+		List<String> allParam = new ArrayList<String>();
+		for(int g = 0; g<mList.size(); g++) {
+			allParam.add(mList.get(g).getDescription());
+		}
+		
+		boolean canAppend = true;
+		
+		String[] param = {"","","",""};
+		String[] splittedValue = {"","","",""};
+		
+		// splitta i valori in ingresso
+		splittedValue = Parser.parseDescription(mCountryP0);
+		
+		for (String item:allParam) {
+			canAppend = true;
+			param = Parser.parseDescription(item);
+			
+			try {
+			if(param[0].equals(splittedValue[0]) && param[3].equals(splittedValue[1])) {
+				for(String p1:param1) {
+					if(p1.equals(param[1])) {
+						canAppend = false;
+						
+					}
+				}
+					if(canAppend) {
+						param1.add(param[1]);
+						page.append("<a href=" + "http://localhost:8080/selectParam2?value=" + param[0] + "," + param[1] + "," + param[3] + ">" + param[1] +"</a> <br>");
 						canAppend = false;
 					}
 			
