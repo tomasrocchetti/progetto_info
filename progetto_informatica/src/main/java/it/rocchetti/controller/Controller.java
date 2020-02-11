@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.rocchetti.mathematics.Mathematics;
 import it.rocchetti.model.DataModel;
 import it.rocchetti.parser.Parser;
 import it.rocchetti.progetto.ProgettoApplication;
@@ -224,5 +225,25 @@ public class Controller {
 			}catch(Exception e) {}
 		}
 		return page.toString();
+	}
+	
+	@GetMapping("/selectRow")
+	public String selectRowId(@RequestParam(name="value", defaultValue="0") String param) throws Exception {
+		int id = 0;
+		int value[];
+		Parser parser = new Parser();
+		List<DataModel> mmV = new ArrayList<DataModel>();
+		mmV = Parser.parse(ProgettoApplication.PATH);
+		for(int g = 0; g<mmV.size(); g++) {
+			if(mmV.get(g).getDescription().equals(param)) {
+				id = mmV.get(g).getId();
+			}
+		}
+		return "Row: " + id + "<br>"
+		+ "AVG = " + Mathematics.avgByRow(mmV.get(id)) + "<br>"
+				+ "MIN = " + Mathematics.minByRow(mmV.get(id)) + "<br>"
+						+ "MAX = " + Mathematics.maxByRow(mmV.get(id)) + "<br>"
+								+ "DEV = " + Mathematics.devStdByRow(mmV.get(id)) + "<br>"
+											+ "CNT = " + Mathematics.count(mmV.get(id)) + "<br>";
 	}
 }
