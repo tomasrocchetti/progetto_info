@@ -1,9 +1,13 @@
 package it.rocchetti.controller;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,6 +15,10 @@ import it.rocchetti.mathematics.Mathematics;
 import it.rocchetti.model.DataModel;
 import it.rocchetti.parser.Parser;
 import it.rocchetti.progetto.ProgettoApplication;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 @RestController
 public class Controller {
@@ -228,22 +236,90 @@ public class Controller {
 	}
 	
 	@GetMapping("/selectRow")
-	public String selectRowId(@RequestParam(name="value", defaultValue="0") String param) throws Exception {
+	public String selectRowId(@RequestParam(name="value", defaultValue="0") String mParam) throws Exception {
 		int id = 0;
 		int value[];
+		String[] param = {"","","",""};
+		param = Parser.parseDescription(mParam);
 		Parser parser = new Parser();
 		List<DataModel> mmV = new ArrayList<DataModel>();
 		mmV = Parser.parse(ProgettoApplication.PATH);
 		for(int g = 0; g<mmV.size(); g++) {
-			if(mmV.get(g).getDescription().equals(param)) {
+			if(mmV.get(g).getDescription().equals(mParam)) {
 				id = mmV.get(g).getId();
 			}
 		}
-		return "Row: " + id + "<br>"
-		+ "AVG = " + Mathematics.avgByRow(mmV.get(id)) + "<br>"
-				+ "MIN = " + Mathematics.minByRow(mmV.get(id)) + "<br>"
-						+ "MAX = " + Mathematics.maxByRow(mmV.get(id)) + "<br>"
-								+ "DEV = " + Mathematics.devStdByRow(mmV.get(id)) + "<br>"
-											+ "CNT = " + Mathematics.count(mmV.get(id)) + "<br>";
+		
+		JSONObject j = new JSONObject();
+		j.put("Country",param[3]);
+		j.put("Parametro_0",param[0]);
+		j.put("Parametro_1",param[1]);
+		j.put("Parametro_2",param[2]);
+		StringWriter out = new StringWriter();
+	      j.writeJSONString(out);
+	    String jsonText = out.toString();
+	    
+	    StringBuilder sBuild = new StringBuilder();
+	    sBuild.append("In questa pagina vengono eseguiti i vari calcoli sulla riga della tabella seleizionata e viene creata una comda stringa JSON da copiare e incollare in PostMan <br>");
+	    sBuild.append("<br>");
+	    sBuild.append("ROW:		" + id + "<br>");
+	    sBuild.append("MIN:		" + Mathematics.minByRow(mmV.get(id)) + "<br>");
+	    sBuild.append("MAX:		" + Mathematics.maxByRow(mmV.get(id)) + "<br>");
+	    sBuild.append("AVG:		" + Mathematics.avgByRow(mmV.get(id)) + "<br>");
+	    sBuild.append("DEV:		" + Mathematics.devStdByRow(mmV.get(id)) + "<br>");
+	    sBuild.append("CNT:		" + Mathematics.count(mmV.get(id)) + "<br>");
+	    sBuild.append("<br>");
+	    sBuild.append("Copia in PostMan: <br>");
+	    sBuild.append(jsonText);
+	    
+		return sBuild.toString();
+	}
+	
+	@PostMapping("/selectRowByParameters")
+	public String selectRowByParameters(@RequestBody String body) throws Exception {
+		
+		
+		
+		JSONParser jParser = new JSONParser();
+		JSONObject json = new JSONObject();
+		try {
+			json = (JSONObject) jParser.parse(body);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		StringBuilder createRowDescription = new StringBuilder();
+		createRowDescription.append(json.get("Parametro_0").toString());
+		createRowDescription.append(",");
+		createRowDescription.append(json.get("Parametro_1").toString());
+		createRowDescription.append(",");
+		createRowDescription.append(json.get("Parametro_2").toString());
+		createRowDescription.append(",");
+		createRowDescription.append(json.get("Country").toString());
+		
+		int id = 0;
+		
+		String mc = createRowDescription.toString();
+		Parser parser = new Parser();
+		List<DataModel> mmV = new ArrayList<DataModel>();
+		mmV = Parser.parse(ProgettoApplication.PATH);
+		
+		for(int g = 0; g<mmV.size(); g++) {
+			if(mmV.get(g).getDescription().equals(mc)) {
+				id = mmV.get(g).getId();
+			}
+		}
+		
+		JSONObject j = new JSONObject();
+		j.put("ROW", id);
+		j.put("MIN",Mathematics.minByRow(mmV.get(id)));
+		j.put("MAX",Mathematics.maxByRow(mmV.get(id)));
+		j.put("AVG",Mathematics.avgByRow(mmV.get(id)));
+		j.put("DEV",Mathematics.devStdByRow(mmV.get(id)));
+		j.put("CNT",Mathematics.count(mmV.get(id)));
+		String jsonText = j.toString();
+		
+		return jsonText;
 	}
 }
