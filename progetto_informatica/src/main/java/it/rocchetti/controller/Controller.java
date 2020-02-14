@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.jackson.JsonObjectDeserializer;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.rocchetti.deleter.Deleter;
 import it.rocchetti.mathematics.Mathematics;
 import it.rocchetti.model.DataModel;
 import it.rocchetti.parser.Parser;
@@ -20,48 +22,38 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+
 @RestController
 public class Controller {
+	/**
+	* Restituisce la lista delle nazioni, al click su una di esse viene fatto scegliere
+	* un parametro relativo a qulla nazione
+	* @return nazione
+	*/
 	@GetMapping("/country")
 	public String country() throws Exception {
-		StringBuilder page = new StringBuilder("Di seguito viene riportata la lista delle nazioni presenti nella tabella, sceglierne una: <br>");
-		
-		
-		
-		// crea un oggetto di tipo Parser per fare il parsing della tabella
+		StringBuilder page = new StringBuilder("Di seguito viene riportata la lista delle nazioni presenti nella tabella, sceglierne una: <br>");// crea un oggetto di tipo Parser per fare il parsing della tabella
 		Parser parser = new Parser();
 		parser.parse(ProgettoApplication.PATH);
-		
 		// lista di oggetti DataModel = tabella completa
 		List<DataModel> mList = new ArrayList<DataModel>();
-		
 		// lista delle nazioni che verranno mostrate
 		List<String> country = new ArrayList<String>();
-		
 		// lista di tutti i parametri non parsati
 		List<String> allParam = new ArrayList<String>();
-		
 		mList = Parser.parse(ProgettoApplication.PATH);
-		
 		String[] param = {"","","",""};
-		
 		boolean canAppend = true;
-		
 		// per ogni elemento della lista prende i parametri e li mette in una lista dedicata
 		// inizia da 1 per nascondere l'intestazione della tabella
 		for(int g = 1; g<mList.size(); g++) {
 			allParam.add(mList.get(g).getDescription());
 		}
-		
 		// per ogni elemento dei allParam fa il parsing
 		for (String item:allParam) {
-			
 			// parsing della descrizione, i parametri sono separati da virgole
 			param = Parser.parseDescription(item);
-			
 			canAppend = true;
-
-			
 			try {
 				// controlla se l'item è stato precedentemente aggiunto alla lista
 				for(String itemCountry:country) {
@@ -75,11 +67,16 @@ public class Controller {
 					canAppend = false;
 				}
 			} catch(Exception e) {}
-		
 		}
 		return page.toString();
 	}
 	
+	/**
+	* Restituisce la lista dei parametri 0 di una nazione, al click su una di esse viene fatto scegliere
+	* il parametro 1
+	* @param nazione
+	* @return nazione, parametro0
+	*/
 	@GetMapping("/selectParam0")
 	public String selectParam0(@RequestParam(name="country", defaultValue="0") String mCountry) throws Exception {
 		
@@ -129,6 +126,12 @@ public class Controller {
 		return page.toString();
 	}
 	
+	/**
+	* Restituisce la lista dei parametri 1 di una nazione, al click su una di esse viene fatto scegliere
+	* il parametro 1
+	* @param nazione, parametro0
+	* @return nazione, parametro0, parametro1
+	*/
 	@GetMapping("/selectParam1")
 	public String selectParam1(@RequestParam(name="value", defaultValue="0") String mCountryP0) throws Exception {
 		
@@ -181,7 +184,12 @@ public class Controller {
 		}
 		return page.toString();
 	}
-	
+	/**
+	* Restituisce la lista dei parametri 2 di una nazione, al click su una di esse viene fatto scegliere
+	* il parametro 1
+	* @param nazione, parametro0, parametro1
+	* @return nazione, parametro0, parametro1, parametro2
+	*/
 	@GetMapping("/selectParam2")
 	public String selectParam2(@RequestParam(name="value", defaultValue="0") String mCountryP0P1) throws Exception {
 		
@@ -234,7 +242,13 @@ public class Controller {
 		}
 		return page.toString();
 	}
-	
+	/**
+	* Dati tutti i parametri trova il record con essi e restituisce i vari calcoli fatti sui valori
+	* inoltre restituisce una stringa in json contenente i parametri da incollare in postman
+	* per testare le richieste POST
+	* @param nazione, parametro0, parametro1, parametro2
+	* @return calcoli e json con tutti i parametri
+	*/
 	@GetMapping("/selectRow")
 	public String selectRowId(@RequestParam(name="value", defaultValue="0") String mParam) throws Exception {
 		int id = 0;
@@ -262,19 +276,28 @@ public class Controller {
 	    StringBuilder sBuild = new StringBuilder();
 	    sBuild.append("In questa pagina vengono eseguiti i vari calcoli sulla riga della tabella seleizionata e viene creata una comda stringa JSON da copiare e incollare in PostMan <br>");
 	    sBuild.append("<br>");
-	    sBuild.append("ROW:		" + id + "<br>");
-	    sBuild.append("MIN:		" + Mathematics.minByRow(mmV.get(id)) + "<br>");
-	    sBuild.append("MAX:		" + Mathematics.maxByRow(mmV.get(id)) + "<br>");
-	    sBuild.append("AVG:		" + Mathematics.avgByRow(mmV.get(id)) + "<br>");
-	    sBuild.append("DEV:		" + Mathematics.devStdByRow(mmV.get(id)) + "<br>");
-	    sBuild.append("CNT:		" + Mathematics.count(mmV.get(id)) + "<br>");
+	    sBuild.append("Parametro_0:		<b>" + param[0] + "</b><br>");
+	    sBuild.append("Parametro_1:		<b>" + param[1] + "</b><br>");
+	    sBuild.append("Parametro_2:		<b>" + param[2] + "</b><br>");
+	    sBuild.append("Country:		<b>" + param[3] + "</b><br>");
+	    sBuild.append("<br>");
+	    sBuild.append("ROW:		<b>" + id + "</b><br>");
+	    sBuild.append("MIN:		<b>" + Mathematics.minByRow(mmV.get(id)) + "</b><br>");
+	    sBuild.append("MAX:		<b>" + Mathematics.maxByRow(mmV.get(id)) + "</b><br>");
+	    sBuild.append("AVG:		<b>" + Mathematics.avgByRow(mmV.get(id)) + "</b><br>");
+	    sBuild.append("DEV:		<b>" + Mathematics.devStdByRow(mmV.get(id)) + "</b><br>");
+	    sBuild.append("CNT:		<b>" + Mathematics.count(mmV.get(id)) + "</b><br>");
 	    sBuild.append("<br>");
 	    sBuild.append("Copia in PostMan: <br>");
 	    sBuild.append(jsonText);
 	    
 		return sBuild.toString();
 	}
-	
+	/**
+	* Dato un json con tutti i parametri in ingresso cerca il record corretto e restituisce tutti i calcoli in json
+	* @param json(nazione, parametro0, parametro1, parametro2)
+	* @return json(ROW, MIN, MAX, AVG, DEV, CNT)
+	*/
 	@PostMapping("/selectRowByParameters")
 	public String selectRowByParameters(@RequestBody String body) throws Exception {
 		
@@ -321,5 +344,11 @@ public class Controller {
 		String jsonText = j.toString();
 		
 		return jsonText;
+	}
+	@DeleteMapping("/deleteRow")
+	public String deleteRow(@RequestParam(name="value", defaultValue="") String paramToDelete) throws Exception {
+		Deleter deleter = new Deleter();
+		deleter.delete(paramToDelete);
+		return "ok";
 	}
 }
