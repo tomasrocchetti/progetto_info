@@ -31,8 +31,6 @@ public class DataModel {
  	/**
  	 * Setta l'ID della riga
  	 * @param mId
- 	 * 
- 	 * 
  	 */
  	public void setId(int mId) {
 		this.id = mId;
@@ -40,8 +38,6 @@ public class DataModel {
  	/**
  	 * Ritorna la descrizione
  	 * @return description
- 	 * 
- 	 * 
  	 */
 	public String getDescription() {
 		return description;
@@ -49,17 +45,14 @@ public class DataModel {
  	/**
  	 * Setta la descrizione
  	 * @param dataType
- 	 * 
- 	 * 
  	 */
 	public void setDescription(String dataType) {
 		this.description = dataType;
 	}
  	/**
  	 * Ritorna l'array di valori 
+ 	 * @param id
  	 * @return value[id]
- 	 * 
- 	 * 
  	 */
 	public int getValue(int id) {
 		return value[id];
@@ -67,8 +60,6 @@ public class DataModel {
  	/**
  	 * Setta il valore dell'array dato l'indice
  	 * @param value1, index
- 	 * 
- 	 * 
  	 */
 	public void setValue(int value1, int index) {
 		this.value[index] = value1;
@@ -76,8 +67,6 @@ public class DataModel {
  	/**
  	 * Ritorna la lunghezza dell'array
  	 * @return value.lenght
- 	 * 
- 	 * 
  	 */
 	public int getSize() {
 		return value.length;
