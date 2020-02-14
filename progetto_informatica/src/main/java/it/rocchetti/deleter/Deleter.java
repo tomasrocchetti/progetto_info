@@ -22,9 +22,9 @@ public class Deleter {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
 		String currentLine;
+		// viene riscritto un nuovo file con tutte le righe che non contengono description
 		if(!description.equals("")) {
 			while((currentLine = reader.readLine()) != null) {
-			    // trim newline when comparing with lineToRemove
 			    String trimmedLine = currentLine.trim();
 			    if(!trimmedLine.contains(description))
 			    { 
@@ -33,6 +33,7 @@ public class Deleter {
 			    }
 			}		writer.close(); 
 			reader.close(); 
+			//viene rinominato il nuovo file con il nome di quello vecchio per sovrascriverlo
 			tempFile.renameTo(inputFile);
 		}
 	}
