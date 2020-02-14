@@ -19,18 +19,19 @@ public class Deleter {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
 		String currentLine;
-
-		while((currentLine = reader.readLine()) != null) {
-		    // trim newline when comparing with lineToRemove
-		    String trimmedLine = currentLine.trim();
-		    if(!trimmedLine.contains(description))
-		    { 
-		      writer.write(currentLine);
-		      writer.newLine();
-		    }
-		}		writer.close(); 
-		reader.close(); 
-		boolean successful = tempFile.renameTo(inputFile);
+		if(!description.equals("")) {
+			while((currentLine = reader.readLine()) != null) {
+			    // trim newline when comparing with lineToRemove
+			    String trimmedLine = currentLine.trim();
+			    if(!trimmedLine.contains(description))
+			    { 
+			      writer.write(currentLine);
+			      writer.newLine();
+			    }
+			}		writer.close(); 
+			reader.close(); 
+			tempFile.renameTo(inputFile);
+		}
 	}
 
 }
