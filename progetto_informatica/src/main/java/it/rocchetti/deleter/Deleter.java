@@ -10,7 +10,10 @@ import java.io.IOException;
 import it.rocchetti.progetto.ProgettoApplication;;
 
 public class Deleter {
-	
+	/**
+	* Data una descrizione in ingresso elimina la riga che la contiene
+	* @param descrizione della riga
+	*/
 	public void delete(String description) throws IOException {
 		File inputFile = new File(ProgettoApplication.PATH);
 		File tempFile = new File("tmp.txt");
