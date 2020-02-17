@@ -1,20 +1,22 @@
 # Progetto informatica Tomas Rocchetti
-La Rest API è in grado di ricevere richieste in ingresso di tipo POST, è possibile inserire come corpo della richiesta post i valori in formato JSon da ricercare nella tabella. Verranno restituiti (sempre sotto forma di dato JSon) i vari calcoli compiuti sui record della tabella che hanno gli attributi inseriti nel corpo della richiesta.
-È inoltre possibile eliminare un record della tabella grazie ad una richiesta di tipo DELETE.
+La rest API al primo avvio scarica una tabella. 
+Ogni record della tabella è formato da 4 attributi e una lista di valori (uno per ogni anno).
+Grazie alle richieste di tipo POST si può scegliere una riga della tabella ed eseguire dei calcoli sui valori.
+Con le richieste di tipo DELETE verrà eliminata dal file una riga scelta.
 
 ### POST
 localhost:8080/selectRowByParameters
 
-basta inserire come corpo della richiesta un JSon contenente i parametri. verrà restituito un JSon con tutti i calcoli effettuati sul record scelto
+Basta inserire come corpo della richiesta un Json contenente i parametri. verrà restituito un Json con tutti i calcoli effettuati sul record scelto
 
 ### DELETE
 localhost:8080/deleteRow
 
-basta inserire i parametri (formato JSon) per scegliere quale riga eliminare
+Basta inserire i parametri (formato Json) per scegliere quale riga eliminare
 
 ### WebUI
 
-È inoltre possibile utilizzare una comoda interfaccia web per scegliere gli attributi e mostrare i calcoli relativi al record scelto.
-L'interfaccia Web restituisce anche una riga JSon contenente i parametri scelti. Sarà possibile copiare e incollare questa stringa in PostMan per testare le richieste POST e DELETE
+È possibile utilizzare una comoda interfaccia web per scegliere il record in base ai suoi attributi e mostrare i calcoli relativi al record stesso.
+L'interfaccia Web restituisce anche una riga Json contenente i parametri scelti. Sarà possibile copiare e incollare questa stringa in PostMan per testare le richieste POST e DELETE
 
 http://localhost:8080/country
