@@ -6,7 +6,7 @@ Con le richieste di tipo DELETE verrà eliminata dal file una riga scelta.
 
 
 ### Sequenzialità del programma
-![](https://github.com/tomasrocchetti/progetto_info/blob/master/flow.png)
+![](https://github.com/tomasrocchetti/progetto_info/blob/master/flow1.png)
 
 
 ### POST
