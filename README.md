@@ -4,15 +4,22 @@ Ogni record della tabella è formato da 4 attributi e una lista di valori (uno p
 Grazie alle richieste di tipo POST si può scegliere una riga della tabella ed eseguire dei calcoli sui valori.
 Con le richieste di tipo DELETE verrà eliminata dal file una riga scelta.
 
+
+### Sequenzialità del programma
+![](https://github.com/tomasrocchetti/progetto_info/blob/master/flow.png)
+
+
 ### POST
 localhost:8080/selectRowByParameters
 
 Basta inserire come corpo della richiesta un Json contenente i parametri. verrà restituito un Json con tutti i calcoli effettuati sul record scelto
 
+
 ### DELETE
 localhost:8080/deleteRow
 
 Basta inserire i parametri (formato Json) per scegliere quale riga eliminare
+
 
 ### WebUI
 
