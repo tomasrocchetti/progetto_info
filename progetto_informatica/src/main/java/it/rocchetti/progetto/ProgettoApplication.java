@@ -23,14 +23,15 @@ public class ProgettoApplication {
 		File fileOut = new File(PATH);
 		if(!fileOut.exists()) {
 			DownloadFile download = new DownloadFile(LINK, fileOut);
+			// nuovo thread per il download del file
 			Thread threadDown = new Thread (download);
+			// fa partire il download
 			threadDown.start();
-			System.out.println(PATH);
 			//Attesa della chiusura del thread di download  
 			try {
 				threadDown.join(2000);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				System.err.println("impossibile completare l'operazione");
 			}
 		}
 			
