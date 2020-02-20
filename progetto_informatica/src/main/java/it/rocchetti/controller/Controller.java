@@ -351,16 +351,26 @@ public class Controller {
 					id = mmV.get(g).getId();
 				}
 			}
-			
+			JSONObject j = new JSONObject();
+			if(id == 0) {
+				j.put("ROW", "ND");
+				j.put("MIN", "ND"); 
+				j.put("MAX", "ND");
+				j.put("AVG", "ND");
+				j.put("DEV", "ND");
+				j.put("CNT", "ND");
+			}
+			else {
+				j.put("ROW", id);
+				j.put("MIN",Mathematics.minByRow(mmV.get(id))); 
+				j.put("MAX",Mathematics.maxByRow(mmV.get(id)));
+				j.put("AVG",Mathematics.avgByRow(mmV.get(id)));
+				j.put("DEV",Mathematics.devStdByRow(mmV.get(id)));
+				j.put("CNT",Mathematics.count(mmV.get(id)));
+			}
 			// restituisce i vari calcoli in formato Json
 			// utilizzando la libreria simple json
-			JSONObject j = new JSONObject();
-			j.put("ROW", id);
-			j.put("MIN",Mathematics.minByRow(mmV.get(id))); 
-			j.put("MAX",Mathematics.maxByRow(mmV.get(id)));
-			j.put("AVG",Mathematics.avgByRow(mmV.get(id)));
-			j.put("DEV",Mathematics.devStdByRow(mmV.get(id)));
-			j.put("CNT",Mathematics.count(mmV.get(id)));
+
 			jsonText = j.toString();
 		}
 		catch(Exception e){
