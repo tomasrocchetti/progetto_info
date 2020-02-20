@@ -33,8 +33,6 @@ public class Controller {
 	@GetMapping("/country")
 	public String country() throws Exception {
 		StringBuilder page = new StringBuilder("Di seguito viene riportata la lista delle nazioni presenti nella tabella, sceglierne una: <br>");// crea un oggetto di tipo Parser per fare il parsing della tabella
-		Parser parser = new Parser();
-		parser.parse(ProgettoApplication.PATH);
 		// lista di oggetti DataModel = tabella completa
 		List<DataModel> mList = new ArrayList<DataModel>();
 		// lista delle nazioni che verranno mostrate
@@ -66,7 +64,9 @@ public class Controller {
 					page.append("<a href=" + "http://localhost:8080/selectParam0?country=" + param[3] + ">" + param[3] +"</a> <br>");
 					canAppend = false;
 				}
-			} catch(Exception e) {}
+			} catch(Exception e) {
+				System.err.println("impossibile verificare un item");
+			}
 		}
 		return page.toString();
 	}
@@ -81,19 +81,20 @@ public class Controller {
 	public String selectParam0(@RequestParam(name="country", defaultValue="0") String mCountry) throws Exception {
 		
 		StringBuilder page = new StringBuilder("Lista degli attributi per: <b>" + mCountry + "</b><br>");
-		
-		// crea un oggetto di tipo Parser per fare il parsing della tabella
-		Parser parser = new Parser();
-		parser.parse(ProgettoApplication.PATH);
+	
 		
 		// lista di oggetti DataModel = tabella completa
 		List<DataModel> mList = new ArrayList<DataModel>();
-		
+		// lista dei parametri 0
 		List<String> param0 = new ArrayList<String>();
 		
+		// parsing del file e copia dei dati in mList
 		mList = Parser.parse(ProgettoApplication.PATH);
 		
+		// lista di tutti i parametri non parsati
 		List<String> allParam = new ArrayList<String>();
+		
+		// per ogni elemento della lista prende i parametri e li mette in una lista dedicata
 		for(int g = 0; g<mList.size(); g++) {
 			allParam.add(mList.get(g).getDescription());
 		}
@@ -102,11 +103,14 @@ public class Controller {
 		
 		String[] param = {"","","",""};
 		
+		// scorre tutta la lista che contiene i parametri e fa il parsing
 		for (String item:allParam) {
 			canAppend = true;
 			param = Parser.parseDescription(item);
 			
 			try {
+			// se il parametro corrisponde al parametro precedente desiderato lo aggiungo alla lista
+			// evitando di scrivere doppioni
 			if(param[3].equals(mCountry)) {
 				for(String p0:param0) {
 					if(p0.equals(param[0])) {
@@ -121,7 +125,9 @@ public class Controller {
 					}
 			
 		}
-			}catch(Exception e) {}
+			}catch(Exception e) {
+				System.err.println("impossibile verificare un item");
+			}
 		}
 		return page.toString();
 	}
@@ -136,10 +142,6 @@ public class Controller {
 	public String selectParam1(@RequestParam(name="value", defaultValue="0") String mCountryP0) throws Exception {
 		
 		StringBuilder page = new StringBuilder("Lista degli attributi per: <b>" + mCountryP0 + "</b><br>");
-		
-		// crea un oggetto di tipo Parser per fare il parsing della tabella
-		Parser parser = new Parser();
-		parser.parse(ProgettoApplication.PATH);
 		
 		// lista di oggetti DataModel = tabella completa
 		List<DataModel> mList = new ArrayList<DataModel>();
@@ -180,7 +182,9 @@ public class Controller {
 					}
 			
 		}
-			}catch(Exception e) {}
+			}catch(Exception e) {
+				System.err.println("impossibile verificare un item");
+			}
 		}
 		return page.toString();
 	}
@@ -238,7 +242,9 @@ public class Controller {
 					}
 			
 		}
-			}catch(Exception e) {}
+			}catch(Exception e) {
+				System.err.println("impossibile verificare un item");
+			}
 		}
 		return page.toString();
 	}
@@ -251,28 +257,35 @@ public class Controller {
 	*/
 	@GetMapping("/selectRow")
 	public String selectRowId(@RequestParam(name="value", defaultValue="0") String mParam) throws Exception {
+		// id per contare le righe
 		int id = 0;
-		int value[];
+		// array in cui finiranno i parametri ricevuti splittati
 		String[] param = {"","","",""};
+		// splitta i parametri CSV e li mette in param
 		param = Parser.parseDescription(mParam);
-		Parser parser = new Parser();
+		// lista contenente tutti i record della tabella
 		List<DataModel> mmV = new ArrayList<DataModel>();
+		// fa il parsing del file e lo mette nella lista
 		mmV = Parser.parse(ProgettoApplication.PATH);
+		// controlla quale record corrisponde ai parametri ricevuti e ne salva l'id
 		for(int g = 0; g<mmV.size(); g++) {
 			if(mmV.get(g).getDescription().equals(mParam)) {
 				id = mmV.get(g).getId();
 			}
 		}
 		
+		// crea un oggetto Json con tutti i parametri
 		JSONObject j = new JSONObject();
 		j.put("Country",param[3]);
 		j.put("Parametro_0",param[0]);
 		j.put("Parametro_1",param[1]);
 		j.put("Parametro_2",param[2]);
 		StringWriter out = new StringWriter();
-	      j.writeJSONString(out);
+	    j.writeJSONString(out);
+	    // converte il json in String
 	    String jsonText = out.toString();
 	    
+	    // String builder per generare l'interfaccia Web
 	    StringBuilder sBuild = new StringBuilder();
 	    sBuild.append("In questa pagina vengono eseguiti i vari calcoli sulla riga della tabella seleizionata e viene creata una comda stringa JSON da copiare e incollare in PostMan <br>");
 	    sBuild.append("<br>");
@@ -302,53 +315,73 @@ public class Controller {
 	public String selectRowByParameters(@RequestBody String body) throws Exception {
 		
 		
-		
+		// fa il parsing della stringa body e la mette nell'oggetto Json
 		JSONParser jParser = new JSONParser();
 		JSONObject json = new JSONObject();
+		boolean parsingError = false;
+		String jsonText = "";
 		try {
 			json = (JSONObject) jParser.parse(body);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		StringBuilder createRowDescription = new StringBuilder();
-		createRowDescription.append(json.get("Parametro_0").toString());
-		createRowDescription.append(",");
-		createRowDescription.append(json.get("Parametro_1").toString());
-		createRowDescription.append(",");
-		createRowDescription.append(json.get("Parametro_2").toString());
-		createRowDescription.append(",");
-		createRowDescription.append(json.get("Country").toString());
-		
-		int id = 0;
-		
-		String mc = createRowDescription.toString();
-		Parser parser = new Parser();
-		List<DataModel> mmV = new ArrayList<DataModel>();
-		mmV = Parser.parse(ProgettoApplication.PATH);
-		
-		for(int g = 0; g<mmV.size(); g++) {
-			if(mmV.get(g).getDescription().equals(mc)) {
-				id = mmV.get(g).getId();
+			
+	
+			// String builder per ottenere i dati del json
+			StringBuilder createDescription = new StringBuilder();
+			createDescription.append(json.get("Parametro_0").toString());
+			createDescription.append(",");
+			createDescription.append(json.get("Parametro_1").toString());
+			createDescription.append(",");
+			createDescription.append(json.get("Parametro_2").toString());
+			createDescription.append(",");
+			createDescription.append(json.get("Country").toString());
+			// id della riga
+			int id = 0;
+			
+			// converte lo string builder in string
+			String stringDescription = createDescription.toString(); 
+			List<DataModel> mmV = new ArrayList<DataModel>();
+			try {
+				mmV = Parser.parse(ProgettoApplication.PATH);
+			} catch (Exception e) {
+				System.err.println("Impossibile effettuare il parsing, stringa inserita in formato non corretto");
+				parsingError = true;
 			}
+			// controlla quale record ha le caratteristiche richieste e memorizza l'id
+			for(int g = 0; g<mmV.size(); g++) {
+				if(mmV.get(g).getDescription().equals(stringDescription)) {
+					id = mmV.get(g).getId();
+				}
+			}
+			
+			// restituisce i vari calcoli in formato Json
+			// utilizzando la libreria simple json
+			JSONObject j = new JSONObject();
+			j.put("ROW", id);
+			j.put("MIN",Mathematics.minByRow(mmV.get(id))); 
+			j.put("MAX",Mathematics.maxByRow(mmV.get(id)));
+			j.put("AVG",Mathematics.avgByRow(mmV.get(id)));
+			j.put("DEV",Mathematics.devStdByRow(mmV.get(id)));
+			j.put("CNT",Mathematics.count(mmV.get(id)));
+			jsonText = j.toString();
 		}
-		
-		JSONObject j = new JSONObject();
-		j.put("ROW", id);
-		j.put("MIN",Mathematics.minByRow(mmV.get(id)));
-		j.put("MAX",Mathematics.maxByRow(mmV.get(id)));
-		j.put("AVG",Mathematics.avgByRow(mmV.get(id)));
-		j.put("DEV",Mathematics.devStdByRow(mmV.get(id)));
-		j.put("CNT",Mathematics.count(mmV.get(id)));
-		String jsonText = j.toString();
-		
+		catch(Exception e){
+			parsingError = true;
+		}
+		// controlla se ci sono stati errori nel parsin della string ainserita e modifica l'output 
+		if (parsingError) {
+			jsonText = "Stringa inserita in formato errato";
+		}
 		return jsonText;
 	}
+	/**
+	* Dato uno o piu parametri elimina tutte le righe con quei parametri
+	* @param parametro da eliminare
+	*/
 	@DeleteMapping("/deleteRow")
 	public String deleteRow(@RequestParam(name="value", defaultValue="") String paramToDelete) throws Exception {
+		// nuovo oggetto della classe delete
 		Deleter deleter = new Deleter();
+		// elimina la lista con i parametri scelti
 		deleter.delete(paramToDelete);
-		return "ok";
+		return "Tutti gli elementi che contengono " + paramToDelete + " sono stati eliminati";
 	}
 }
