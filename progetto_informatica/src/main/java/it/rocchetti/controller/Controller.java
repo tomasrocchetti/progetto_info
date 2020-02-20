@@ -390,8 +390,12 @@ public class Controller {
 	public String deleteRow(@RequestParam(name="value", defaultValue="") String paramToDelete) throws Exception {
 		// nuovo oggetto della classe delete
 		Deleter deleter = new Deleter();
+		// stringa per informare dell'avvenuta eliminazione
+		String result = "Valore inserito non valido";
 		// elimina la lista con i parametri scelti
-		deleter.delete(paramToDelete);
-		return "Tutti gli elementi che contengono " + paramToDelete + " sono stati eliminati";
+		if (deleter.delete(paramToDelete)) {
+			result = "Tutti gli elementi che contengono " + paramToDelete + " sono stati eliminati";
+		}
+		return result;
 	}
 }
