@@ -14,7 +14,8 @@ public class Deleter {
 	* Data una descrizione in ingresso elimina la riga che la contiene
 	* @param descrizione della riga
 	*/
-	public void delete(String description) throws IOException {
+	public boolean delete(String description) throws IOException {
+		boolean success = false;
 		File inputFile = new File(ProgettoApplication.PATH);
 		File tempFile = new File("tmp.txt");
 
@@ -23,7 +24,7 @@ public class Deleter {
 
 		String currentLine;
 		// viene riscritto un nuovo file con tutte le righe che non contengono description
-		if(!description.equals("")) {
+		if(!description.isBlank()) {
 			while((currentLine = reader.readLine()) != null) {
 			    String trimmedLine = currentLine.trim();
 			    if(!trimmedLine.contains(description))
@@ -35,7 +36,9 @@ public class Deleter {
 			reader.close(); 
 			//viene rinominato il nuovo file con il nome di quello vecchio per sovrascriverlo
 			tempFile.renameTo(inputFile);
+			success = true;
 		}
+		return success;
 	}
 
 }
