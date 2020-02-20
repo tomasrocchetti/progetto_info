@@ -18,6 +18,8 @@ public class Deleter {
 		boolean success = false;
 		File inputFile = new File(ProgettoApplication.PATH);
 		File tempFile = new File("tmp.txt");
+		// variabile per capire se il record è stato trovato
+		boolean found = false;
 
 		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
 		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
@@ -32,11 +34,20 @@ public class Deleter {
 			      writer.write(currentLine);
 			      writer.newLine();
 			    }
-			}		writer.close(); 
+			    else {
+			    	found = true;
+			    }
+			    
+			}		
+			writer.close(); 
 			reader.close(); 
 			//viene rinominato il nuovo file con il nome di quello vecchio per sovrascriverlo
 			tempFile.renameTo(inputFile);
 			success = true;
+			
+		}
+		if (!found) {
+			success = false;
 		}
 		return success;
 	}
