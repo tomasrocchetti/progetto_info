@@ -13,7 +13,11 @@ import it.rocchetti.model.DataModel;
 import it.rocchetti.progetto.ProgettoApplication;
 
 public class Parser {
-	
+	/**
+	* Dato in ingresso l'indireizzo del file fa il parsing e mette tutti i dati in un vettore di DataModel
+	* @param path del file
+	* @return vettore di tipo DataModel che contiene tutti i record
+	*/
 	public static Vector<DataModel> parse(String path) throws Exception {
 		
 		// oggetto di tipo DataModel, ogni riga della tabella è un oggetto
@@ -82,7 +86,11 @@ public class Parser {
         TSVFile.close();
 		return mList;
     }
-	
+	/**
+	* I parametri non sono di tipo TSV ma CSV, quindi viene usato un parser supplementare
+	* @param stringa per parsing
+	* @return array con valori splittati
+	*/
 	public static String[] parseDescription(String item) throws Exception{		
 		// variabile che conterrà i parametri parsati
 		String[] param = {"","","",""};
