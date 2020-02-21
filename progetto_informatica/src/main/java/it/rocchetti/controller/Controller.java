@@ -387,15 +387,46 @@ public class Controller {
 	* @param parametro da eliminare
 	*/
 	@DeleteMapping("/deleteRow")
-	public String deleteRow(@RequestParam(name="value", defaultValue="") String paramToDelete) throws Exception {
-		// nuovo oggetto della classe delete
-		Deleter deleter = new Deleter();
-		// stringa per informare dell'avvenuta eliminazione
-		String result = "Valore inserito non valido";
-		// elimina la lista con i parametri scelti
-		if (deleter.delete(paramToDelete)) {
-			result = "Tutti gli elementi che contengono " + paramToDelete + " sono stati eliminati";
-		}
+	public String deleteRow(@RequestBody String body) throws Exception {
+		// fa il parsing della stringa body e la mette nell'oggetto Json
+		JSONParser jParser = new JSONParser();
+		JSONObject json = new JSONObject();
+		boolean parsingError = false;
+		String jsonText = "";
+		String result = "Valore non corretto";
+		try {
+			json = (JSONObject) jParser.parse(body);
+				
+			// String builder per ottenere i dati del json
+			StringBuilder createDescription = new StringBuilder();
+			createDescription.append(json.get("Parametro_0").toString());
+			createDescription.append(",");
+			createDescription.append(json.get("Parametro_1").toString());
+			createDescription.append(",");
+			createDescription.append(json.get("Parametro_2").toString());
+			createDescription.append(",");
+			createDescription.append(json.get("Country").toString());
+			// converte lo string builder in string
+			String stringDescription = createDescription.toString();
+					
+			// nuovo oggetto della classe delete
+			Deleter deleter = new Deleter();
+					
+			// elimina la lista con i parametri scelti
+			if (deleter.delete(stringDescription)) {
+				result = "Tutti gli elementi che contengono "
+						+ json.get("Parametro_0").toString() + ","
+							+  json.get("Parametro_1").toString() + ","
+								+ json.get("Parametro_2").toString() + ","
+									+ json.get("Country").toString()
+										+ " sono stati eliminati";
+				}
+			}
+			catch(Exception e) {
+				System.err.println("Impossibile effettuare il parsing, stringa inserita in formato non corretto");
+				parsingError = true;
+			}
+		System.out.println(""+body);
 		return result;
 	}
 }
